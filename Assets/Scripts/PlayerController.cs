@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour
     public GameObject rightWall;
 
     private Animator animator;
+    private bool isDead = false;
+
 
     void Start()
     {
@@ -73,7 +75,10 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        HandleInput();
+        if (!isDead)
+        { 
+            HandleInput();
+        }
     }
 
     void HandleInput()
@@ -188,6 +193,13 @@ public class PlayerController : MonoBehaviour
     public void SetSpeed(float newSpeed)
     {
         vSpeed = newSpeed;
+    }
+
+    public void Die()
+    {
+        isDead = true;
+        holdingOn = false;
+        body.isKinematic = false;
     }
 }
 
