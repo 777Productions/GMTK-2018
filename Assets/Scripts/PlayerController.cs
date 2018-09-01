@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
             grab_button = "Player2_Grab";
         }
 
-        body.centerOfMass = new Vector2(0, -0.05f);
+        body.centerOfMass = new Vector2(0, -0.1f);
         body.angularDrag = drag;
         body.drag = drag/20;
 
