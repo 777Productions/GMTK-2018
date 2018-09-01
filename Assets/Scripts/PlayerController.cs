@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyForce(float iHor, float iVert)
     {
-        body.AddForce(Vector2.right * iHor * swingForce);
+        body.AddForce(transform.right * iHor * swingForce);
     }
 
     public bool FallingTooFast()
