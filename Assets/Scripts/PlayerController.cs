@@ -38,7 +38,9 @@ public class PlayerController : MonoBehaviour
     public GameObject leftWall;
     public GameObject rightWall;
 
+    private Animator animator;
     private bool isDead = false;
+
 
     void Start()
     {
@@ -61,15 +63,17 @@ public class PlayerController : MonoBehaviour
             grab_button = "Player2_Grab";
         }
 
-        body.centerOfMass = new Vector2(0, -0.1f);
+        body.centerOfMass = new Vector2(0, -0.05f);
         body.angularDrag = drag;
         body.drag = drag/20;
 
         min_x = leftWall.transform.position.x + (leftWall.GetComponent<BoxCollider2D>().size.x / 2);
         max_x = rightWall.transform.position.x - (rightWall.GetComponent<BoxCollider2D>().size.x / 2);
+
+        animator = GetComponent<Animator>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!isDead)
         { 
@@ -79,6 +83,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput()
     {
+        animator.SetBool("isClimbing", false);
+        animator.SetBool("isSwinging", false);
+
         if (CrossPlatformInputManager.GetButtonDown(grab_button))
         {
             if (!FallingTooFast())
@@ -133,6 +140,11 @@ public class PlayerController : MonoBehaviour
                     }
                 }
 
+                if (iHorizontal != 0 || iVertical != 0)
+                {
+                    animator.SetBool("isClimbing", true);
+                }
+                
                 float hor = hSpeed * iHorizontal;
                 float ver = vSpeed * iVertical;
 
@@ -145,7 +157,8 @@ public class PlayerController : MonoBehaviour
                     hor = Mathf.Min(hor, 0);
                 }
 
-                body.velocity = new Vector2(hor, ver);
+                Vector2 newVelocity = new Vector2(hor, ver);
+                body.velocity = newVelocity;
             }
             else if (holdingOn && !otherPlayer.GetComponent<PlayerController>().holdingOn)
             {
@@ -153,6 +166,7 @@ public class PlayerController : MonoBehaviour
             }
             else //we're not holding on - apply swing force!
             {
+                animator.SetBool("isSwinging", true);
                 ApplyForce(iHorizontal, iVertical);
             }
         }
@@ -174,6 +188,11 @@ public class PlayerController : MonoBehaviour
     public bool FallingTooFast()
     {
         return (body.velocity.magnitude > grabVelocityLimit) && !otherPlayer.GetComponent<PlayerController>().holdingOn;
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        vSpeed = newSpeed;
     }
 
     public void Die()
