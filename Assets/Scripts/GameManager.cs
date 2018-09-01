@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public void Win(GameObject winner)
+    {
+        //say which player won - ask if they want to play again
+    }
+
+    public void GameOver()
+    {
+        //bring up game over text - ask if they want to play again
+
+    }
 }

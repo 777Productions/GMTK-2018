@@ -4,22 +4,54 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform player1;
-    public Transform player2;
+    public float x_move_factor = 10f;
 
-    public bool isTracking = true;
-	
-	void Update ()
+    private float y_min;
+
+    private PlayerController[] playerControllers;
+    
+    private void Start()
     {
-        if (isTracking)
-        {       
-            float averageYpos = GetAveragePlayerYpos();
-            transform.position = new Vector3(transform.position.x, averageYpos, transform.position.z);
+        playerControllers = FindObjectsOfType<PlayerController>();
+        y_min = transform.position.y;
+    }
+
+    void Update ()
+    {
+        if (!AllPlayersDead())
+        {
+            transform.position = GetNewCameraPos();
         }
     }
 
-    private float GetAveragePlayerYpos()
+    private Vector3 GetNewCameraPos()
     {
-        return (player1.transform.position.y + player2.transform.position.y) / 2;
+        float sum_x = 0f, sum_y = 0f;
+
+        foreach(PlayerController player in playerControllers)
+        {
+            sum_x += player.transform.position.x;
+            sum_y += player.transform.position.y;
+        }
+
+        float average_x = sum_x / playerControllers.Length;
+        float average_y = sum_y / playerControllers.Length;
+
+        average_y = Mathf.Max(y_min, average_y);
+        
+        return new Vector3(average_x / x_move_factor, average_y, transform.position.z);
+    }
+
+    private bool AllPlayersDead()
+    {
+        foreach(PlayerController player in playerControllers)
+        {
+            if (!player.FallingTooFast())
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

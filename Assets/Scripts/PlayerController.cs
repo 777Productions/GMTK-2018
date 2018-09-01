@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
         if (CrossPlatformInputManager.GetButtonDown(grab_button))
         {
-            if (body.velocity.magnitude < grabVelocityLimit)
+            if (!FallingTooFast())
             {
                 body.isKinematic = true;
                 body.velocity = Vector2.zero;
@@ -123,6 +123,11 @@ public class PlayerController : MonoBehaviour
     private void ApplyForce(float iHor, float iVert)
     {
         body.AddForce(Vector2.right * iHor * swingForce);
+    }
+
+    public bool FallingTooFast()
+    {
+        return body.velocity.magnitude > grabVelocityLimit;
     }
 }
 
