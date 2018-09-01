@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
 {
     public GameObject gameOverPanel;
     public GameObject winPanel;
+
+    public GameObject instructionPanel;
+
+    public bool gameStarted = false;
+    
     private bool waitingOnNewGame = false;
     
 	// Use this for initialization
@@ -44,5 +49,15 @@ public class GameManager : MonoBehaviour
     {
         gameOverPanel.SetActive(true);
         waitingOnNewGame = true;
+    }
+
+    public void HideInstructionPanel()
+    {
+        if (!gameStarted)
+        {
+            gameStarted = true;
+            Animator fadePanel = instructionPanel.GetComponent<Animator>();
+            fadePanel.SetTrigger("FadeOut");
+        }
     }
 }

@@ -38,8 +38,9 @@ public class CameraController : MonoBehaviour
         float average_y = sum_y / playerControllers.Length;
 
         average_y = Mathf.Max(y_min, average_y);
+        average_x = Mathf.Clamp(average_x / x_move_factor, -0.7f, 0.7f);
         
-        return new Vector3(average_x / x_move_factor, average_y, transform.position.z);
+        return new Vector3(average_x, average_y, transform.position.z);
     }
 
     private bool AllPlayersDead()

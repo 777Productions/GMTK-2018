@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
-
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,7 +29,15 @@ public class PlayerController : MonoBehaviour
 
     private DistanceJoint2D joint;
     private GameManager gameManager;
-        
+
+    public Text readyText;
+
+    private float min_x;
+    private float max_x;
+
+    public GameObject leftWall;
+    public GameObject rightWall;
+
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
@@ -54,6 +62,9 @@ public class PlayerController : MonoBehaviour
         body.centerOfMass = new Vector2(0, -0.1f);
         body.angularDrag = drag;
         body.drag = drag/20;
+
+        min_x = leftWall.transform.position.x + (leftWall.GetComponent<BoxCollider2D>().size.x / 2);
+        max_x = rightWall.transform.position.x - (rightWall.GetComponent<BoxCollider2D>().size.x / 2);
     }
 
     void Update()
@@ -68,6 +79,7 @@ public class PlayerController : MonoBehaviour
             if (!FallingTooFast())
             {
                 playerReady = true;
+                readyText.enabled = true;
                 body.isKinematic = true;
                 body.velocity = Vector2.zero;
                 body.angularVelocity = 0;
@@ -79,6 +91,8 @@ public class PlayerController : MonoBehaviour
 
         if (playerReady && otherPlayer.GetComponent<PlayerController>().playerReady)
         {
+            gameManager.HideInstructionPanel();
+
             if (CrossPlatformInputManager.GetButtonUp(grab_button))
             {
                 body.isKinematic = false;
@@ -114,7 +128,19 @@ public class PlayerController : MonoBehaviour
                     }
                 }
 
-                body.velocity = new Vector2(hSpeed * iHorizontal, vSpeed * iVertical);
+                float hor = hSpeed * iHorizontal;
+                float ver = vSpeed * iVertical;
+
+                if (transform.position.x < min_x)
+                {
+                    hor = Mathf.Max(hor, 0);
+                }
+                else if (transform.position.x > max_x)
+                {
+                    hor = Mathf.Min(hor, 0);
+                }
+
+                body.velocity = new Vector2(hor, ver);
             }
             else if (holdingOn && !otherPlayer.GetComponent<PlayerController>().holdingOn)
             {
@@ -130,6 +156,7 @@ public class PlayerController : MonoBehaviour
             if (CrossPlatformInputManager.GetButtonUp(grab_button))
             {
                 playerReady = false;
+                readyText.enabled = false;
             }
         }
     }   

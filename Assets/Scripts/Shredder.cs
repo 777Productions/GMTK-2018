@@ -17,7 +17,9 @@ public class Shredder : MonoBehaviour
         {
             gameManager.GameOver();
         }
-
-        Destroy(collision.gameObject);
+        else
+        {
+            Destroy(collision.gameObject);
+        }
     }
 }
