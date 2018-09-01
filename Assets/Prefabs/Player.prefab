@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 61297976883686522}
   - component: {fileID: 212895260606641374}
   - component: {fileID: 114468510589042282}
+  - component: {fileID: 232544862687229306}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -37,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1368814832911406}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1, y: -6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,6 +100,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c10689b3b759df04e8d218b6b2ba2b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rope: {fileID: 0}
+  playerNumber: 0
+  otherPlayer: {fileID: 0}
+  vSpeed: 1
+  hSpeed: 0.5
+  drag: 10
+  holdingOn: 0
 --- !u!212 &212895260606641374
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -145,3 +153,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!232 &232544862687229306
+DistanceJoint2D:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1368814832911406}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 1.2652314
+  m_MaxDistanceOnly: 0

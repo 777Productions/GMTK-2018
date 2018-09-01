@@ -15,21 +15,24 @@ public class PlayerController : MonoBehaviour
     [Range(0.1f, 3.0f)]
     public float hSpeed = 1.0f;
 
-    public float drag = 5.0f;
+    public float drag = 0.5f;
+    public float grabVelocityLimit = 5;
+    public float swingForce = 5;
+
+    public bool holdingOn = false;
 
     private Rigidbody2D body;
-    public bool holdingOn = false;
-    private bool isSwinging = false;
-
     private string horizontal_axis;
     private string vertical_axis;
     private string grab_button;
 
-    private float angularVelocity;
+    private DistanceJoint2D joint;
         
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        joint = GetComponent<DistanceJoint2D>();
+        joint.distance = rope.maxLength;
 
         if (playerNumber == PlayerNumber.One)
         {
@@ -43,19 +46,15 @@ public class PlayerController : MonoBehaviour
             vertical_axis = "Player2_Vertical";
             grab_button = "Player2_Grab";
         }
+
+        body.centerOfMass = new Vector2(0, -0.1f);
+        body.angularDrag = drag;
+        body.drag = drag/20;
     }
 
     void Update()
     {
         HandleInput();
-    }
-
-    private void FixedUpdate()
-    {
-        if (isSwinging)
-        {
-            Swing();
-        }
     }
 
     void HandleInput()
@@ -67,11 +66,15 @@ public class PlayerController : MonoBehaviour
 
         if (CrossPlatformInputManager.GetButtonDown(grab_button))
         {
-            body.isKinematic = true;
-            holdingOn = true;
-            isSwinging = false;
+            if (body.velocity.magnitude < grabVelocityLimit)
+            {
+                body.isKinematic = true;
+                body.velocity = Vector2.zero;
+                body.angularVelocity = 0;
+                holdingOn = true;
 
-            transform.rotation = Quaternion.identity;
+                transform.rotation = Quaternion.identity;
+            }
         }
 
         if (CrossPlatformInputManager.GetButtonUp(grab_button))
@@ -80,7 +83,7 @@ public class PlayerController : MonoBehaviour
             holdingOn = false;
         } 
         
-        if (holdingOn)
+        if (holdingOn && otherPlayer.GetComponent<PlayerController>().holdingOn)
         {
             if (rope.CalculateCurrentLength() >= rope.maxLength)
             {
@@ -106,51 +109,20 @@ public class PlayerController : MonoBehaviour
 
             body.velocity = new Vector2(hSpeed * iHorizontal, vSpeed * iVertical);
         }
-        else //i.e. falling/swinging
+        else if (holdingOn && !otherPlayer.GetComponent<PlayerController>().holdingOn)
         {
-            if (!otherPlayer.GetComponent<PlayerController>().holdingOn)
-            {
-                body.isKinematic = false;
-            }
-
-            if (!isSwinging && (rope.CalculateCurrentLength() >= rope.maxLength) && transform.position.y < otherPlayer.position.y)
-            {
-                isSwinging = true;
-                body.velocity = Vector2.zero;
-                body.isKinematic = true;
-                angularVelocity = CalculateAngularVelocity(body.velocity.y);
-            }
+            body.velocity = Vector2.zero;
         }
-    }
+        else //we're not holding on - apply swing force!
+        {
+            ApplyForce(iHorizontal, iVertical);
+        }
 
-    public void Swing()
+    }   
+
+    private void ApplyForce(float iHor, float iVert)
     {
-        angularVelocity += CalculateAngularVelocity(Physics.gravity.y);
-
-        if (angularVelocity > 0)
-        {
-            angularVelocity -= drag;
-        }
-        else
-        {
-            angularVelocity += drag;
-        }
-                
-        transform.RotateAround(otherPlayer.transform.position, Vector3.forward, angularVelocity * Time.deltaTime);
-    }
-
-    public float CalculateAngularVelocity(float downAcceleration)
-    {
-        float angle_toOtherPlayer = Vector2.Angle(transform.up, otherPlayer.position - transform.position);
-        float alpha = 90 - angle_toOtherPlayer;
-        float angularVelocity = downAcceleration / Mathf.Cos(Mathf.Deg2Rad * alpha);
-
-        if (transform.position.x < otherPlayer.position.x)
-        {
-            angularVelocity *= -1;
-        }
-        
-        return angularVelocity;
+        body.AddForce(Vector2.right * iHor * swingForce);
     }
 }
 
