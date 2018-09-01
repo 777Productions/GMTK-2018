@@ -790,6 +790,11 @@ Prefab:
       propertyPath: ShapeModule.radius.value
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 199468293116053866, guid: 66cf02121b09abe45921d1a179c90ea3,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66cf02121b09abe45921d1a179c90ea3, type: 2}
   m_IsPrefabAsset: 0
