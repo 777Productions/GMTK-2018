@@ -19,7 +19,8 @@ public class PlayerController : MonoBehaviour
     public float grabVelocityLimit = 5;
     public float swingForce = 5;
 
-    public bool holdingOn = false;
+    public bool holdingOn = true;
+    private bool playerReady = false;
 
     private Rigidbody2D body;
     private string horizontal_axis;
@@ -27,11 +28,14 @@ public class PlayerController : MonoBehaviour
     private string grab_button;
 
     private DistanceJoint2D joint;
+    private GameManager gameManager;
         
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         joint = GetComponent<DistanceJoint2D>();
+        gameManager = FindObjectOfType<GameManager>();
+
         joint.distance = rope.maxLength;
 
         if (playerNumber == PlayerNumber.One)
@@ -59,65 +63,75 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput()
     {
-        float iHorizontal, iVertical;
-                
-        iHorizontal = CrossPlatformInputManager.GetAxis(horizontal_axis);
-        iVertical = CrossPlatformInputManager.GetAxis(vertical_axis);
-
         if (CrossPlatformInputManager.GetButtonDown(grab_button))
         {
             if (!FallingTooFast())
             {
+                playerReady = true;
                 body.isKinematic = true;
                 body.velocity = Vector2.zero;
                 body.angularVelocity = 0;
                 holdingOn = true;
-
+                
                 transform.rotation = Quaternion.identity;
             }
         }
 
-        if (CrossPlatformInputManager.GetButtonUp(grab_button))
+        if (playerReady && otherPlayer.GetComponent<PlayerController>().playerReady)
         {
-            body.isKinematic = false;
-            holdingOn = false;
-        } 
-        
-        if (holdingOn && otherPlayer.GetComponent<PlayerController>().holdingOn)
-        {
-            if (rope.CalculateCurrentLength() >= rope.maxLength)
+            if (CrossPlatformInputManager.GetButtonUp(grab_button))
             {
-                //limit climbing
-                if (otherPlayer.position.y > transform.position.y)
-                {
-                    iVertical = Mathf.Clamp(iVertical, 0, 1);
-                }
-                else
-                {
-                    iVertical = Mathf.Clamp(iVertical, -1, 0);
-                }
-
-                if (otherPlayer.position.x > transform.position.x)
-                {
-                    iHorizontal = Mathf.Clamp(iHorizontal, 0, 1);
-                }
-                else
-                {
-                    iHorizontal = Mathf.Clamp(iHorizontal, -1, 0);
-                }
+                body.isKinematic = false;
+                holdingOn = false;
             }
 
-            body.velocity = new Vector2(hSpeed * iHorizontal, vSpeed * iVertical);
-        }
-        else if (holdingOn && !otherPlayer.GetComponent<PlayerController>().holdingOn)
-        {
-            body.velocity = Vector2.zero;
-        }
-        else //we're not holding on - apply swing force!
-        {
-            ApplyForce(iHorizontal, iVertical);
-        }
+            float iHorizontal, iVertical;
 
+            iHorizontal = CrossPlatformInputManager.GetAxis(horizontal_axis);
+            iVertical = CrossPlatformInputManager.GetAxis(vertical_axis);
+
+            if (holdingOn && otherPlayer.GetComponent<PlayerController>().holdingOn)
+            {
+                if (rope.CalculateCurrentLength() >= rope.maxLength)
+                {
+                    //limit climbing
+                    if (otherPlayer.position.y > transform.position.y)
+                    {
+                        iVertical = Mathf.Clamp(iVertical, 0, 1);
+                    }
+                    else
+                    {
+                        iVertical = Mathf.Clamp(iVertical, -1, 0);
+                    }
+
+                    if (otherPlayer.position.x > transform.position.x)
+                    {
+                        iHorizontal = Mathf.Clamp(iHorizontal, 0, 1);
+                    }
+                    else
+                    {
+                        iHorizontal = Mathf.Clamp(iHorizontal, -1, 0);
+                    }
+                }
+
+                body.velocity = new Vector2(hSpeed * iHorizontal, vSpeed * iVertical);
+            }
+            else if (holdingOn && !otherPlayer.GetComponent<PlayerController>().holdingOn)
+            {
+                body.velocity = Vector2.zero;
+            }
+            else //we're not holding on - apply swing force!
+            {
+                ApplyForce(iHorizontal, iVertical);
+            }
+        }
+        else
+        {
+            if (CrossPlatformInputManager.GetButtonUp(grab_button))
+            {
+                playerReady = false;
+            }
+        }
     }   
 
     private void ApplyForce(float iHor, float iVert)
@@ -127,7 +141,7 @@ public class PlayerController : MonoBehaviour
 
     public bool FallingTooFast()
     {
-        return body.velocity.magnitude > grabVelocityLimit;
+        return (body.velocity.magnitude > grabVelocityLimit) && !otherPlayer.GetComponent<PlayerController>().holdingOn;
     }
 }
 

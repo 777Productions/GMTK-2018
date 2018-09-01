@@ -1,24 +1,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
+    public GameObject gameOverPanel;
+    public GameObject winPanel;
+    private bool waitingOnNewGame = false;
+    
 	// Use this for initialization
 	void Start ()
     {
-		
-	}
+        gameOverPanel.SetActive(false);
+        winPanel.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (waitingOnNewGame)
+        {
+            if (CrossPlatformInputManager.GetButtonDown("Player1_Grab"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+
+            if (CrossPlatformInputManager.GetButtonDown("Cancel"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+            }
+        }
+    }
 
     public void Win(GameObject winner)
     {
-        //say which player won - ask if they want to play again
+        winPanel.SetActive(true);
+        waitingOnNewGame = true;
     }
 
     public void GameOver()
     {
-        //bring up game over text - ask if they want to play again
-
+        gameOverPanel.SetActive(true);
+        waitingOnNewGame = true;
     }
 }
