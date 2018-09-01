@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
     public GameObject leftWall;
     public GameObject rightWall;
 
+    private bool isDead = false;
+
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
@@ -69,7 +71,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        HandleInput();
+        if (!isDead)
+        { 
+            HandleInput();
+        }
     }
 
     void HandleInput()
@@ -169,6 +174,13 @@ public class PlayerController : MonoBehaviour
     public bool FallingTooFast()
     {
         return (body.velocity.magnitude > grabVelocityLimit) && !otherPlayer.GetComponent<PlayerController>().holdingOn;
+    }
+
+    public void Die()
+    {
+        isDead = true;
+        holdingOn = false;
+        body.isKinematic = false;
     }
 }
 
