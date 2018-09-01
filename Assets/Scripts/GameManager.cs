@@ -13,6 +13,11 @@ public class GameManager : MonoBehaviour
     public GameObject instructionPanel;
 
     public bool gameStarted = false;
+
+    public Image fadeImage;
+
+    [Range(0, 5)]
+    public float fadeDuration = 2.0f;
     
     private bool waitingOnNewGame = false;
     
@@ -21,6 +26,7 @@ public class GameManager : MonoBehaviour
     {
         gameOverPanel.SetActive(false);
         winPanel.SetActive(false);
+        StartCoroutine(FadeHelper.FadeToZeroAlpha(fadeImage, fadeDuration));
     }
 
     private void Update()
