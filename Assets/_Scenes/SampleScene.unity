@@ -172,6 +172,26 @@ Prefab:
       propertyPath: otherPlayer
       value: 
       objectReference: {fileID: 1001299316}
+    - target: {fileID: 114468510589042282, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: drag
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 61297976883686522, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 61297976883686522, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: m_Offset.y
+      value: -0.18141502
+      objectReference: {fileID: 0}
+    - target: {fileID: 61297976883686522, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: m_Size.y
+      value: 0.33717
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38b7ca6166c708248af9887b84c24bf1, type: 2}
   m_IsPrefabAsset: 0
@@ -408,6 +428,16 @@ Prefab:
       propertyPath: otherPlayer
       value: 
       objectReference: {fileID: 446870022}
+    - target: {fileID: 114468510589042282, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: drag
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 61297976883686522, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38b7ca6166c708248af9887b84c24bf1, type: 2}
   m_IsPrefabAsset: 0
@@ -508,7 +538,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1949284945}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 7.67, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 446870022}
@@ -652,4 +682,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1: {fileID: 446870022}
   player2: {fileID: 1001299316}
-  maxLength: 3
+  maxLength: 2

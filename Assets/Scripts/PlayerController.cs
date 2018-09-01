@@ -15,12 +15,34 @@ public class PlayerController : MonoBehaviour
     [Range(0.1f, 3.0f)]
     public float hSpeed = 1.0f;
 
-    private Rigidbody2D body;
-    private bool holdingOn;
+    public float drag = 5.0f;
 
+    private Rigidbody2D body;
+    public bool holdingOn = false;
+    private bool isSwinging = false;
+
+    private string horizontal_axis;
+    private string vertical_axis;
+    private string grab_button;
+
+    private float angularVelocity;
+        
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+
+        if (playerNumber == PlayerNumber.One)
+        {
+            horizontal_axis = "Player1_Horizontal";
+            vertical_axis = "Player1_Vertical";
+            grab_button = "Player1_Grab";
+        }
+        else
+        {
+            horizontal_axis = "Player2_Horizontal";
+            vertical_axis = "Player2_Vertical";
+            grab_button = "Player2_Grab";
+        }
     }
 
     void Update()
@@ -28,44 +50,39 @@ public class PlayerController : MonoBehaviour
         HandleInput();
     }
 
+    private void FixedUpdate()
+    {
+        if (isSwinging)
+        {
+            Swing();
+        }
+    }
+
     void HandleInput()
     {
         float iHorizontal, iVertical;
+                
+        iHorizontal = CrossPlatformInputManager.GetAxis(horizontal_axis);
+        iVertical = CrossPlatformInputManager.GetAxis(vertical_axis);
 
-        if (playerNumber == PlayerNumber.One)
+        if (CrossPlatformInputManager.GetButtonDown(grab_button))
         {
-            iHorizontal = CrossPlatformInputManager.GetAxis("Player1_Horizontal");
-            iVertical = CrossPlatformInputManager.GetAxis("Player1_Vertical");
-            if (CrossPlatformInputManager.GetButtonDown("Player1_Grab"))
-            {
-                body.isKinematic = true;
-                holdingOn = true;
-            }
-            if (CrossPlatformInputManager.GetButtonUp("Player1_Grab"))
-            {
-                body.isKinematic = false;
-                holdingOn = false;
-            }
-        }
-        else
-        {
-            iHorizontal = CrossPlatformInputManager.GetAxis("Player2_Horizontal");
-            iVertical = CrossPlatformInputManager.GetAxis("Player2_Vertical");
-            if (CrossPlatformInputManager.GetButtonDown("Player2_Grab"))
-            {
-                body.isKinematic = true;
-                holdingOn = true;
-            }
-            if (CrossPlatformInputManager.GetButtonUp("Player2_Grab"))
-            {
-                body.isKinematic = false;
-                holdingOn = false;
-            }
+            body.isKinematic = true;
+            holdingOn = true;
+            isSwinging = false;
+
+            transform.rotation = Quaternion.identity;
         }
 
-        if (rope.CalculateCurrentLength() >= rope.maxLength)
+        if (CrossPlatformInputManager.GetButtonUp(grab_button))
         {
-            if (holdingOn)
+            body.isKinematic = false;
+            holdingOn = false;
+        } 
+        
+        if (holdingOn)
+        {
+            if (rope.CalculateCurrentLength() >= rope.maxLength)
             {
                 //limit climbing
                 if (otherPlayer.position.y > transform.position.y)
@@ -86,17 +103,54 @@ public class PlayerController : MonoBehaviour
                     iHorizontal = Mathf.Clamp(iHorizontal, -1, 0);
                 }
             }
-            else
-            {
-                //swing
-                Debug.Log("I am swinging");
-            }
-        }
 
-        if (body.isKinematic == true)
-        {
             body.velocity = new Vector2(hSpeed * iHorizontal, vSpeed * iVertical);
         }
+        else //i.e. falling/swinging
+        {
+            if (!otherPlayer.GetComponent<PlayerController>().holdingOn)
+            {
+                body.isKinematic = false;
+            }
+
+            if (!isSwinging && (rope.CalculateCurrentLength() >= rope.maxLength) && transform.position.y < otherPlayer.position.y)
+            {
+                isSwinging = true;
+                body.velocity = Vector2.zero;
+                body.isKinematic = true;
+                angularVelocity = CalculateAngularVelocity(body.velocity.y);
+            }
+        }
+    }
+
+    public void Swing()
+    {
+        angularVelocity += CalculateAngularVelocity(Physics.gravity.y);
+
+        if (angularVelocity > 0)
+        {
+            angularVelocity -= drag;
+        }
+        else
+        {
+            angularVelocity += drag;
+        }
+                
+        transform.RotateAround(otherPlayer.transform.position, Vector3.forward, angularVelocity * Time.deltaTime);
+    }
+
+    public float CalculateAngularVelocity(float downAcceleration)
+    {
+        float angle_toOtherPlayer = Vector2.Angle(transform.up, otherPlayer.position - transform.position);
+        float alpha = 90 - angle_toOtherPlayer;
+        float angularVelocity = downAcceleration / Mathf.Cos(Mathf.Deg2Rad * alpha);
+
+        if (transform.position.x < otherPlayer.position.x)
+        {
+            angularVelocity *= -1;
+        }
+        
+        return angularVelocity;
     }
 }
 
