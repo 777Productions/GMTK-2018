@@ -60,8 +60,14 @@ public class PlayerController : MonoBehaviour
         get { return isDead; }
         set
         {
+            if (!isDead)
+            {
+                PlayClip(deathSound);
+            }
             isDead = value;
-            PlayClip(deathSound);
+
+            
+            
             animator.SetBool("isDead", value);
         }
     }

@@ -223,7 +223,7 @@ MonoBehaviour:
   grabVelocityLimit: 4
   climbingSound: {fileID: 0}
   swingingSound: {fileID: 0}
-  deathSound: {fileID: 0}
+  deathSound: {fileID: 8300000, guid: 36d8b096e727c99488d13bedb0e828a2, type: 3}
   readyText: {fileID: 0}
   swingStrength: 5
   supportingPlayer: 0
