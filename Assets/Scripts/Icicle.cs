@@ -5,6 +5,7 @@ using UnityEngine;
 public class Icicle : MonoBehaviour {
 
     public AudioClip audioClip;
+    public AudioClip[] impacts;
 
     private AudioSource audioSource;
 
@@ -25,6 +26,7 @@ public class Icicle : MonoBehaviour {
 
         if (playerController)
         {
+            PlayImpact();
             playerController.Die();
         }
     }
@@ -32,6 +34,12 @@ public class Icicle : MonoBehaviour {
     public void Swoosh()
     {
         audioSource.clip = audioClip;
+        audioSource.Play();
+    }
+
+    private void PlayImpact()
+    {
+        audioSource.clip = impacts[Random.Range(0, impacts.Length)];
         audioSource.Play();
     }
 }

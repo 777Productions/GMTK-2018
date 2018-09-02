@@ -196,6 +196,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 651dc41aba282684c8246d8afff7c50c, type: 3}
+  impacts:
+  - {fileID: 8300000, guid: 76f36f7d0f7efc64791db1b2c1602085, type: 3}
+  - {fileID: 8300000, guid: 6ffd6b11fad7e634d8b2e85aa61152f3, type: 3}
+  - {fileID: 8300000, guid: b9c889476bcb5c948a4b2096589cb5c4, type: 3}
 --- !u!212 &212062569433929284
 SpriteRenderer:
   m_ObjectHideFlags: 1

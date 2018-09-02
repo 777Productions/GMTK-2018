@@ -59,7 +59,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0.25
-  m_AngularDrag: 2
+  m_AngularDrag: 0.1
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -221,16 +221,15 @@ MonoBehaviour:
   vSpeed: 2
   hSpeed: 1
   grabVelocityLimit: 4
-  climbingSound: {fileID: 0}
-  swingingSound: {fileID: 0}
-  deathSound: {fileID: 8300000, guid: 36d8b096e727c99488d13bedb0e828a2, type: 3}
-  climbingCrunches:
+  swingingSound: {fileID: 8300000, guid: 33329932490864c42a99be23ec9891f0, type: 3}
+  deathSound: {fileID: 8300000, guid: 99049cab21ee8264180a056b504b4d34, type: 3}
+  climbingSounds:
   - {fileID: 8300000, guid: c3bfec1ec4dab714fb79d301049f363d, type: 3}
   - {fileID: 8300000, guid: c15077233cc8ec245bec871e0755afc1, type: 3}
   - {fileID: 8300000, guid: 134f411600a5fb84ebb5c483d91e0c91, type: 3}
   - {fileID: 8300000, guid: d5359ec7d98e1c149a2ddb0c6d8923be, type: 3}
   readyText: {fileID: 0}
-  swingStrength: 5
+  swingStrength: 20
   supportingPlayer: 0
   winSprite: {fileID: 0}
   loseSprite: {fileID: 0}

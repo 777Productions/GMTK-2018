@@ -746,6 +746,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300006, guid: 62550ed4c41945e4d94157297fb0856d,
         type: 3}
+    - target: {fileID: 114468510589042282, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: swingingSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 33329932490864c42a99be23ec9891f0, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38b7ca6166c708248af9887b84c24bf1, type: 2}
   m_IsPrefabAsset: 0
@@ -2338,7 +2343,7 @@ Prefab:
     - target: {fileID: 114468510589042282, guid: 38b7ca6166c708248af9887b84c24bf1,
         type: 2}
       propertyPath: swingStrength
-      value: 5
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 61297976883686522, guid: 38b7ca6166c708248af9887b84c24bf1,
         type: 2}
@@ -2387,6 +2392,11 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: 1e2ef8706a8972841acd2d08bc59dbb7,
         type: 3}
+    - target: {fileID: 114468510589042282, guid: 38b7ca6166c708248af9887b84c24bf1,
+        type: 2}
+      propertyPath: swingingSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 33329932490864c42a99be23ec9891f0, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38b7ca6166c708248af9887b84c24bf1, type: 2}
   m_IsPrefabAsset: 0
