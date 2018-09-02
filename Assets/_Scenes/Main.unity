@@ -137,7 +137,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 40461814}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 45.2, z: 0}
+  m_LocalPosition: {x: 0, y: 47.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1918578530}
@@ -155,7 +155,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -20}
+  m_Offset: {x: 0, y: -25}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2422,7 +2422,7 @@ MonoBehaviour:
   instructionPanel: {fileID: 1382365857}
   gameStarted: 0
   fadeImage: {fileID: 44349269}
-  fadeDuration: 2
+  fadeDuration: 1
   flag: {fileID: 1488854131}
   HUD: {fileID: 1386674693}
 --- !u!4 &1604629396

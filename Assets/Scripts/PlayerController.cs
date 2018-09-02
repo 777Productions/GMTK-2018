@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour
 
     public bool gameOver;
 
+    private bool deathFallingSoundPlayed = false;
+
     #region States
 
     private bool isReady;
@@ -67,7 +69,7 @@ public class PlayerController : MonoBehaviour
         get { return isDead; }
         set
         {
-            if (!isDead)
+            if (!isDead && value == true)
             {
                 PlayClip(deathSound);
             }
@@ -99,7 +101,6 @@ public class PlayerController : MonoBehaviour
         set
         {
             isClimbing = value;
-            PlayClip(climbingSound);
             animator.SetBool("isClimbing", value);
         }
     }
@@ -111,7 +112,6 @@ public class PlayerController : MonoBehaviour
         set
         {
             isSwinging = value;
-            PlayClip(swingingSound);
             animator.SetBool("isSwinging", value);
         }
     }
@@ -194,6 +194,7 @@ public class PlayerController : MonoBehaviour
         IsFalling = false;
 
         gameOver = false;
+        
     }
 
     void Update()
@@ -207,8 +208,10 @@ public class PlayerController : MonoBehaviour
             HandleGameStart();
         }
 
-        if (FallingTooFast())
+        if (FallingTooFast() && otherPlayer.FallingTooFast() && ! deathFallingSoundPlayed)
         {
+            deathFallingSoundPlayed = true;
+            Debug.Log("You dead");
             PlayClip(deathSound);
         }
     }

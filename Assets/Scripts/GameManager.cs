@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
 
         while (fadeImage.color.a < 1.0f)
         {
-            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, fadeImage.color.a + (Time.deltaTime / fadeDuration));
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, fadeImage.color.a + (Time.deltaTime / 0.5f));
             yield return null;
         }
                 
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
 
         while (fadeImage.color.a > 0.0f)
         {
-            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, fadeImage.color.a - (Time.deltaTime / fadeDuration));
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, fadeImage.color.a - (Time.deltaTime / 0.5f));
             yield return null;
         }
 
