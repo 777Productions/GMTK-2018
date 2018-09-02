@@ -47,6 +47,14 @@ public class GameManager : MonoBehaviour
 
     public void Win(GameObject winner)
     {
+        //fade to black
+        //set winner pos and sprite
+        //set loser pos and sprite
+        //set active text
+        //move camera
+        //fade from black
+
+
         winPanel.SetActive(true);
         waitingOnNewGame = true;
     }
