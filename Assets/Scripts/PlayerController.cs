@@ -64,11 +64,13 @@ public class PlayerController : MonoBehaviour
             {
                 PlayClip(deathSound);
             }
+
             isDead = value;
 
-            
-            
-            animator.SetBool("isDead", value);
+            if (isDead)
+            {
+                animator.SetTrigger("dead");
+            }
         }
     }
 
