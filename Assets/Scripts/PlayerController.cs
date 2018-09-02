@@ -193,6 +193,11 @@ public class PlayerController : MonoBehaviour
         {
             HandleGameStart();
         }
+
+        if (FallingTooFast())
+        {
+            PlayClip(deathSound);
+        }
     }
 
     private void HandleGameStart()
@@ -266,6 +271,7 @@ public class PlayerController : MonoBehaviour
             if ((transform.position - otherPlayer.transform.position).magnitude > joint.distance - 0.05)
             {
                 IsSwinging = true;
+
             }
             else
             {
