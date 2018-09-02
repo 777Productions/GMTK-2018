@@ -17,6 +17,12 @@ public class PlayerController : MonoBehaviour
 
     public float grabVelocityLimit = 5;
 
+    public AudioClip climbingSound;
+    public AudioClip swingingSound;
+    public AudioClip deathSound;
+
+    private AudioSource audioSource;
+
     private Rigidbody2D body;
 
     private string horizontal_axis;
@@ -55,6 +61,7 @@ public class PlayerController : MonoBehaviour
         set
         {
             isDead = value;
+            PlayClip(deathSound);
             animator.SetBool("isDead", value);
         }
     }
@@ -77,6 +84,7 @@ public class PlayerController : MonoBehaviour
         set
         {
             isClimbing = value;
+            PlayClip(climbingSound);
             animator.SetBool("isClimbing", value);
         }
     }
@@ -88,6 +96,7 @@ public class PlayerController : MonoBehaviour
         set
         {
             isSwinging = value;
+            PlayClip(swingingSound);
             animator.SetBool("isSwinging", value);
         }
     }
@@ -140,7 +149,7 @@ public class PlayerController : MonoBehaviour
         joint = GetComponent<DistanceJoint2D>();
         gameManager = FindObjectOfType<GameManager>();
         animator = GetComponent<Animator>();
-
+        audioSource = GetComponent<AudioSource>();
 
         if (playerColour == PlayerColour.Blue)
         {
@@ -285,6 +294,12 @@ public class PlayerController : MonoBehaviour
     {
         IsDead = true;
         IsHoldingOn = false;
+    }
+
+    private void PlayClip(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.Play();
     }
 }
 

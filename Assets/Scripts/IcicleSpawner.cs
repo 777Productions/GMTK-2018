@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class IcicleSpawner : MonoBehaviour {
+public class IcicleSpawner : MonoBehaviour
+{
 
     public GameObject[] iciclePrefabs;
 
@@ -18,16 +20,20 @@ public class IcicleSpawner : MonoBehaviour {
     public float minInitialVelocity = 0;
     public float maxInitialVelocity = 1;
 
+    public Text warningText;
+
     private int playersInRange = 0;
-	
-	// Update is called once per frame
-	void Update ()
+
+    private bool hasWarned = false;
+
+    // Update is called once per frame
+    void Update()
     {
-		if (playersInRange > 0 && Random.Range(0.0f, 1.0f) <= spawnRate * Time.deltaTime)
+        if (playersInRange > 0 && Random.Range(0.0f, 1.0f) <= spawnRate * Time.deltaTime)
         {
             SpawnIcicle();
         }
-	}
+    }
 
     private void SpawnIcicle()
     {
@@ -35,7 +41,7 @@ public class IcicleSpawner : MonoBehaviour {
         Vector2 initialVelocity = GetSpawnVelocity();
         float size = GetSpawnSize();
 
-        GameObject icicle = Instantiate(iciclePrefabs[Random.Range(0,iciclePrefabs.Length)], spawnPosition, Quaternion.identity, this.transform);
+        GameObject icicle = Instantiate(iciclePrefabs[Random.Range(0, iciclePrefabs.Length)], spawnPosition, Quaternion.identity, this.transform);
         icicle.transform.localScale = size * Vector3.one;
         icicle.GetComponent<Rigidbody2D>().velocity = initialVelocity;
     }
@@ -52,12 +58,12 @@ public class IcicleSpawner : MonoBehaviour {
     private Vector2 GetSpawnVelocity()
     {
         Vector2 velocity = new Vector2(0.0f, Random.Range(minInitialVelocity, maxInitialVelocity));
-        return velocity;    
+        return velocity;
     }
 
     private float GetSpawnSize()
     {
-        float size = Random.Range(minInitialVelocity, maxInitialVelocity);
+        float size = Random.Range(minSpawnSize, maxSpawnSize);
         return size;
     }
 
@@ -67,6 +73,11 @@ public class IcicleSpawner : MonoBehaviour {
         if (playerController)
         {
             playersInRange += 1;
+            if (!hasWarned)
+            {
+                hasWarned = true;
+                StartCoroutine(flashWarning());
+            }
         }
     }
 
@@ -77,5 +88,28 @@ public class IcicleSpawner : MonoBehaviour {
         {
             playersInRange -= 1;
         }
+    }
+
+    private IEnumerator flashWarning()
+    {
+        warningText.enabled = true;
+
+        warningText.color = new Color(warningText.color.r, warningText.color.g, warningText.color.b, 0);
+
+        for (int flashes = 5; flashes > 0; flashes--)
+        {
+            while (warningText.color.a < 1.0f)
+            {
+                warningText.color = new Color(warningText.color.r, warningText.color.g, warningText.color.b, warningText.color.a + (Time.deltaTime / 0.25f));
+                yield return null;
+            }
+            while (warningText.color.a > 0.0f)
+            {
+                warningText.color = new Color(warningText.color.r, warningText.color.g, warningText.color.b, warningText.color.a - (Time.deltaTime / 0.255f));
+                yield return null;
+            }
+        }
+
+        warningText.enabled = false;
     }
 }
