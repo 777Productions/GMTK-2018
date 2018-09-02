@@ -208,7 +208,7 @@ public class PlayerController : MonoBehaviour
             HandleGameStart();
         }
 
-        if (FallingTooFast() && otherPlayer.FallingTooFast() && ! deathFallingSoundPlayed)
+        if (FallingTooFast() && otherPlayer.FallingTooFast() && ! deathFallingSoundPlayed && !IsDead)
         {
             deathFallingSoundPlayed = true;
             Debug.Log("You dead");
