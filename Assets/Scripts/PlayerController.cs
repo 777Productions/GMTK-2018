@@ -7,39 +7,131 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public Rope rope;
-    public PlayerNumber playerNumber;
-    public Transform otherPlayer;
+    public PlayerColour playerColour;
+    public PlayerController otherPlayer;
 
     [Range(0.1f, 3.0f)]
     public float vSpeed = 1.0f;
     [Range(0.1f, 3.0f)]
     public float hSpeed = 1.0f;
 
-    public float drag = 0.5f;
     public float grabVelocityLimit = 5;
-    public float swingForce = 5;
-
-    public bool holdingOn = true;
-    private bool playerReady = false;
 
     private Rigidbody2D body;
+
     private string horizontal_axis;
     private string vertical_axis;
     private string grab_button;
 
     private DistanceJoint2D joint;
+
     private GameManager gameManager;
 
     public Text readyText;
 
-    private float min_x;
-    private float max_x;
-
-    public GameObject leftWall;
-    public GameObject rightWall;
-
     private Animator animator;
-    private bool isDead = false;
+
+    public float swingStrength = 5.0f;
+
+    public bool supportingPlayer;
+
+    #region States
+
+    private bool isReady;
+    public bool IsReady
+    {
+        get { return isReady; }
+        set
+        {
+            isReady = value;
+            readyText.enabled = value;
+        }
+    }
+
+    private bool isDead;
+    public bool IsDead
+    {
+        get { return isDead; }
+        set
+        {
+            isDead = value;
+            animator.SetBool("isDead", value);
+        }
+    }
+
+    private bool isStationary;
+    public bool IsStationary
+    {
+        get { return isStationary; }
+        set
+        {
+            isStationary = value;
+            animator.SetBool("isStationary", value);
+        }
+    }
+
+    private bool isClimbing;
+    public bool IsClimbing
+    {
+        get { return isClimbing; }
+        set
+        {
+            isClimbing = value;
+            animator.SetBool("isClimbing", value);
+        }
+    }
+
+    private bool isSwinging;
+    public bool IsSwinging
+    {
+        get { return isSwinging; }
+        set
+        {
+            isSwinging = value;
+            animator.SetBool("isSwinging", value);
+        }
+    }
+
+    private bool isFalling;
+    public bool IsFalling
+    {
+        get { return isFalling; }
+        set
+        {
+            isFalling = value;
+            animator.SetBool("isFalling", value);
+        }
+    }
+
+    private bool isHoldingOn;
+    public bool IsHoldingOn
+    {
+        get { return isHoldingOn; }
+        set
+        {
+            isHoldingOn = value;
+
+            if (value)
+            {
+                //body.velocity = Vector2.zero;
+                body.rotation = 0;
+                body.constraints = RigidbodyConstraints2D.FreezeRotation;
+                body.gravityScale = 0;
+                body.mass = 100;
+                otherPlayer.SetSupporting(false);
+            }
+            else
+            {
+                body.constraints = RigidbodyConstraints2D.None;
+                body.gravityScale = 1;
+                body.mass = 1;
+
+                otherPlayer.SetSupporting(true);
+            }
+        }
+    }
+
+    #endregion
 
 
     void Start()
@@ -47,10 +139,10 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         joint = GetComponent<DistanceJoint2D>();
         gameManager = FindObjectOfType<GameManager>();
+        animator = GetComponent<Animator>();
 
-        joint.distance = rope.maxLength;
 
-        if (playerNumber == PlayerNumber.One)
+        if (playerColour == PlayerColour.Blue)
         {
             horizontal_axis = "Player1_Horizontal";
             vertical_axis = "Player1_Vertical";
@@ -63,131 +155,125 @@ public class PlayerController : MonoBehaviour
             grab_button = "Player2_Grab";
         }
 
-        body.centerOfMass = new Vector2(0, -0.1f);
-        body.angularDrag = drag;
-        body.drag = drag/20;
+        joint.distance = rope.maxLength;
 
-        min_x = leftWall.transform.position.x + (leftWall.GetComponent<BoxCollider2D>().size.x / 2);
-        max_x = rightWall.transform.position.x - (rightWall.GetComponent<BoxCollider2D>().size.x / 2);
+        body.centerOfMass = new Vector2(0, -1f);
 
-        animator = GetComponent<Animator>();
+        IsHoldingOn = true;
+        IsReady = false;
+        IsDead = false;
+        IsStationary = true;
+        IsClimbing = false;
+        IsSwinging = false;
+        IsFalling = false;
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if (!isDead)
-        { 
+        if (gameManager.gameStarted && !IsDead)
+        {
             HandleInput();
         }
+        else
+        {
+            HandleGameStart();
+        }
+    }
+
+    private void HandleGameStart()
+    {
+        if (CrossPlatformInputManager.GetButtonDown(grab_button))
+        {
+            IsReady = true;
+        }
+
+        if (CrossPlatformInputManager.GetButtonUp(grab_button))
+        {
+            IsReady = false;
+        }
+
+        if (BothReady())
+        {
+            gameManager.StartGame();
+        }
+    }
+
+    private bool BothReady()
+    {
+        return IsReady && otherPlayer.IsReady;
     }
 
     void HandleInput()
     {
-        animator.SetBool("isClimbing", false);
-        animator.SetBool("isSwinging", false);
+        IsSwinging = false;
+        IsStationary = false;
+        IsClimbing = false;
+        IsFalling = false;
+
+        float iHorizontal = CrossPlatformInputManager.GetAxis(horizontal_axis);
+        float iVertical = CrossPlatformInputManager.GetAxis(vertical_axis);
 
         if (CrossPlatformInputManager.GetButtonDown(grab_button))
         {
             if (!FallingTooFast())
             {
-                playerReady = true;
-                readyText.enabled = true;
-                body.isKinematic = true;
-                body.velocity = Vector2.zero;
-                body.angularVelocity = 0;
-                holdingOn = true;
-                
-                transform.rotation = Quaternion.identity;
+                IsHoldingOn = true;
             }
         }
-
-        if (playerReady && otherPlayer.GetComponent<PlayerController>().playerReady)
+        else if (CrossPlatformInputManager.GetButtonUp(grab_button))
         {
-            gameManager.HideInstructionPanel();
+            IsHoldingOn = false;
+        }
 
-            if (CrossPlatformInputManager.GetButtonUp(grab_button))
+        // Climbing or stationary
+        if (IsHoldingOn)
+        {
+            // Only allow movement if both players are holding on.
+            if (!supportingPlayer)
             {
-                body.isKinematic = false;
-                holdingOn = false;
-            }
+                Vector2 newVelocity = new Vector2(iHorizontal * hSpeed, iVertical * vSpeed);
 
-            float iHorizontal, iVertical;
+                IsClimbing = newVelocity.magnitude > 0.0f;
 
-            iHorizontal = CrossPlatformInputManager.GetAxis(horizontal_axis);
-            iVertical = CrossPlatformInputManager.GetAxis(vertical_axis);
-
-            if (holdingOn && otherPlayer.GetComponent<PlayerController>().holdingOn)
-            {
-                if (rope.CalculateCurrentLength() >= rope.maxLength)
-                {
-                    //limit climbing
-                    if (otherPlayer.position.y > transform.position.y)
-                    {
-                        iVertical = Mathf.Clamp(iVertical, 0, 1);
-                    }
-                    else
-                    {
-                        iVertical = Mathf.Clamp(iVertical, -1, 0);
-                    }
-
-                    if (otherPlayer.position.x > transform.position.x)
-                    {
-                        iHorizontal = Mathf.Clamp(iHorizontal, 0, 1);
-                    }
-                    else
-                    {
-                        iHorizontal = Mathf.Clamp(iHorizontal, -1, 0);
-                    }
-                }
-
-                if (iHorizontal != 0 || iVertical != 0)
-                {
-                    animator.SetBool("isClimbing", true);
-                }
-                
-                float hor = hSpeed * iHorizontal;
-                float ver = vSpeed * iVertical;
-
-                if (transform.position.x < min_x)
-                {
-                    hor = Mathf.Max(hor, 0);
-                }
-                else if (transform.position.x > max_x)
-                {
-                    hor = Mathf.Min(hor, 0);
-                }
-
-                Vector2 newVelocity = new Vector2(hor, ver);
                 body.velocity = newVelocity;
             }
-            else if (holdingOn && !otherPlayer.GetComponent<PlayerController>().holdingOn)
+            else
             {
+                IsStationary = true;
+
                 body.velocity = Vector2.zero;
             }
-            else //we're not holding on - apply swing force!
-            {
-                animator.SetBool("isSwinging", true);
-                ApplyForce(iHorizontal, iVertical);
-            }
         }
+
+        // Falling or swinging
         else
         {
-            if (CrossPlatformInputManager.GetButtonUp(grab_button))
+            if ((transform.position - otherPlayer.transform.position).magnitude > joint.distance - 0.05)
             {
-                playerReady = false;
-                readyText.enabled = false;
+                IsSwinging = true;
             }
-        }
-    }   
+            else
+            {
+                IsFalling = true;
+            }
 
-    private void ApplyForce(float iHor, float iVert)
-    {
-        body.AddForce(transform.right * iHor * swingForce);
+            body.AddForce(transform.right * iHorizontal * swingStrength);
+        }
     }
 
     public bool FallingTooFast()
     {
-        return (body.velocity.magnitude > grabVelocityLimit) && !otherPlayer.GetComponent<PlayerController>().holdingOn;
+        return body.velocity.magnitude > grabVelocityLimit && !otherPlayer.IsHoldingOn;
+    }
+
+    public void SetSupporting(bool isSupporting)
+    {
+        supportingPlayer = isSupporting;
+
+        if (supportingPlayer && IsHoldingOn)
+        {
+            body.velocity = Vector2.zero;
+        }
     }
 
     public void SetSpeed(float newSpeed)
@@ -197,13 +283,12 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        isDead = true;
-        holdingOn = false;
-        body.isKinematic = false;
+        IsDead = true;
+        IsHoldingOn = false;
     }
 }
 
-public enum PlayerNumber
+public enum PlayerColour
 {
-    One, Two
+    Blue, Red
 }

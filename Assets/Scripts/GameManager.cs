@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
         waitingOnNewGame = true;
     }
 
-    public void HideInstructionPanel()
+    public void StartGame()
     {
         if (!gameStarted)
         {
