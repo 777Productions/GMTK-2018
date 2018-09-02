@@ -256,6 +256,7 @@ public class PlayerController : MonoBehaviour
                 Vector2 newVelocity = new Vector2(iHorizontal * hSpeed, iVertical * vSpeed);
 
                 IsClimbing = newVelocity.magnitude > 0.0f;
+                IsStationary = newVelocity.magnitude == 0.0f;
 
                 body.velocity = newVelocity;
             }
