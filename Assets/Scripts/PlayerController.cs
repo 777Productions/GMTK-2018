@@ -17,11 +17,10 @@ public class PlayerController : MonoBehaviour
 
     public float grabVelocityLimit = 5;
 
-    public AudioClip climbingSound;
     public AudioClip swingingSound;
     public AudioClip deathSound;
 
-    public AudioClip[] climbingCrunches;
+    public AudioClip[] climbingSounds;
 
     private AudioSource audioSource;
 
@@ -346,7 +345,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayCrunch()
     {
-        audioSource.clip = climbingCrunches[Random.Range(0, climbingCrunches.Length)];
+        audioSource.clip = climbingSounds[Random.Range(0, climbingSounds.Length)];
         audioSource.Play();
     }
 
