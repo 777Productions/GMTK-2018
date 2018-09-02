@@ -15,7 +15,7 @@ public class Goal : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<PlayerController>())
         {
-            gameManager.Win(collision.gameObject);
+            StartCoroutine(gameManager.Win(collision.gameObject));
         }
     }
 }

@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
 
     public Color colour;
 
+    public bool gameOver;
+
     #region States
 
     private bool isReady;
@@ -190,11 +192,13 @@ public class PlayerController : MonoBehaviour
         IsClimbing = false;
         IsSwinging = false;
         IsFalling = false;
+
+        gameOver = false;
     }
 
     void Update()
     {
-        if (gameManager.gameStarted && !IsDead)
+        if (gameManager.gameStarted && !IsDead && !gameOver)
         {
             HandleInput();
         }
@@ -324,11 +328,12 @@ public class PlayerController : MonoBehaviour
         audioSource.Play();
     }
 
-    public void Disable()
+    public void DisableMovement()
     {
+        body.isKinematic = true;
         body.velocity = Vector3.zero;
         animator.enabled = false;
-        this.enabled = false;
+        gameOver = true;
     }
 }
 

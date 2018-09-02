@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 50836739629677622}
   - component: {fileID: 61874499358256068}
   m_Layer: 0
-  m_Name: Icicle
+  m_Name: Icicle3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,18 +75,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.050689697, y: -0.088707924}
+  m_Offset: {x: -0.028492928, y: 0.00000047683716}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.88, y: 5.06}
+    oldSize: {x: 1.36, y: 2.17}
     newSize: {x: 3.88, y: 5.06}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.3655033, y: 4.055502}
+  m_Size: {x: 0.394598, y: 1.529993}
   m_EdgeRadius: 0
 --- !u!114 &114641474130134170
 MonoBehaviour:
@@ -134,7 +134,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 21300000, guid: ef1b98365f7b69444a1690548bfa2289, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 77b7f39460acbfe44bf4c6e95c0908fe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

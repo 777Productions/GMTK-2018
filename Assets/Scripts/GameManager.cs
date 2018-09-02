@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     private Vector3 losePos;
     private Vector3 winCameraPos;
 
-    public SpriteRenderer flag;
+    public GameObject flag;
     public GameObject HUD;
     
     // Use this for initialization
@@ -56,26 +56,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Win(GameObject winner)
+    public IEnumerator Win(GameObject winner)
     {
-        //fade to black
-        FadeHelper.FadeToFullAlpha(fadeImage, 2.0f);
-        
         //get both player controllers
         PlayerController winningPlayer = winner.GetComponent<PlayerController>();
         GameObject loser = winningPlayer.otherPlayer.gameObject;
         PlayerController losingPlayer = loser.GetComponent<PlayerController>();
+
+        winningPlayer.DisableMovement();
+        losingPlayer.DisableMovement();
+
+        //fade to black
+        fadeImage.enabled = true;
+        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, 0);
+
+        while (fadeImage.color.a < 1.0f)
+        {
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, fadeImage.color.a + (Time.deltaTime / fadeDuration));
+            yield return null;
+        }
+                
+
                 
         //set sprite
         winner.GetComponent<SpriteRenderer>().sprite = winningPlayer.winSprite;
         loser.GetComponent<SpriteRenderer>().sprite = losingPlayer.loseSprite;
 
-        //change flag colour
-        flag.color = winningPlayer.colour;
-
         //disable both player scripts
-        winningPlayer.Disable();
-        losingPlayer.Disable();
+        winningPlayer.enabled = false;
+        losingPlayer.enabled = false;
 
         //set pos
         winner.transform.position = winPos;
@@ -93,7 +102,17 @@ public class GameManager : MonoBehaviour
         HUD.SetActive(false);
 
         //fade from black
-        FadeHelper.FadeToZeroAlpha(fadeImage, 2.0f);
+        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, 1);
+
+        while (fadeImage.color.a > 0.0f)
+        {
+            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, fadeImage.color.a - (Time.deltaTime / fadeDuration));
+            yield return null;
+        }
+
+        fadeImage.enabled = false;
+        
+        yield return null;
     }
 
     public void GameOver()
