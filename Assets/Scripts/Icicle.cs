@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Icicle : MonoBehaviour {
 
+    public AudioClip audioClip;
+
+    private AudioSource audioSource;
+
+
 	// Use this for initialization
 	void Start () {
-		
+        audioSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -22,5 +27,11 @@ public class Icicle : MonoBehaviour {
         {
             playerController.Die();
         }
+    }
+
+    public void Swoosh()
+    {
+        audioSource.clip = audioClip;
+        audioSource.Play();
     }
 }

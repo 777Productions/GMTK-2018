@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip swingingSound;
     public AudioClip deathSound;
 
+    public AudioClip[] climbingCrunches;
+
     private AudioSource audioSource;
 
     private Rigidbody2D body;
@@ -47,6 +49,8 @@ public class PlayerController : MonoBehaviour
     public Color colour;
 
     public bool gameOver;
+
+    private bool swingSoundReady = true;
 
     private bool deathFallingSoundPlayed = false;
 
@@ -211,7 +215,6 @@ public class PlayerController : MonoBehaviour
         if (FallingTooFast() && otherPlayer.FallingTooFast() && ! deathFallingSoundPlayed && !IsDead)
         {
             deathFallingSoundPlayed = true;
-            Debug.Log("You dead");
             PlayClip(deathSound);
         }
     }
@@ -264,6 +267,8 @@ public class PlayerController : MonoBehaviour
         // Climbing or stationary
         if (IsHoldingOn)
         {
+            swingSoundReady = true;
+            
             // Only allow movement if both players are holding on.
             if (!supportingPlayer)
             {
@@ -289,9 +294,17 @@ public class PlayerController : MonoBehaviour
             {
                 IsSwinging = true;
 
+                if (swingSoundReady)
+                {
+                    PlayClip(swingingSound);
+                }
+
+                swingSoundReady = false;
+
             }
             else
             {
+                swingSoundReady = true;
                 IsFalling = true;
             }
 
@@ -328,6 +341,12 @@ public class PlayerController : MonoBehaviour
     private void PlayClip(AudioClip clip)
     {
         audioSource.clip = clip;
+        audioSource.Play();
+    }
+
+    private void PlayCrunch()
+    {
+        audioSource.clip = climbingCrunches[Random.Range(0, climbingCrunches.Length)];
         audioSource.Play();
     }
 

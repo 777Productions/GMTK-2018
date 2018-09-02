@@ -30,5 +30,11 @@ public class IcicleCollisionAvoidanceSystem : MonoBehaviour {
         }
     }
 
-
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Icicle>())
+        {
+            collision.GetComponent<Icicle>().Swoosh();
+        }
+    }
 }
