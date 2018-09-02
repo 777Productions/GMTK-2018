@@ -146,13 +146,18 @@ public class PlayerController : MonoBehaviour
                 body.gravityScale = 0;
                 body.mass = 1;
 
+                otherPlayer.hSpeed = 1;
+                otherPlayer.vSpeed = 2;
+
                 otherPlayer.SetSupporting(false);
             }
             else
             {
                 body.constraints = RigidbodyConstraints2D.None;
                 body.gravityScale = 1;
-                body.mass = 3;
+                body.mass = 1;
+                otherPlayer.hSpeed = 0.5f;
+                otherPlayer.vSpeed = 0.5f;
 
                 otherPlayer.SetSupporting(true);
             }
@@ -268,23 +273,13 @@ public class PlayerController : MonoBehaviour
         if (IsHoldingOn)
         {
             swingSoundReady = true;
-            
-            // Only allow movement if both players are holding on.
-            //if (!supportingPlayer)
-            //{
-                Vector2 newVelocity = new Vector2(iHorizontal * hSpeed, iVertical * vSpeed);
 
-                IsClimbing = newVelocity.magnitude > 0.0f;
-                IsStationary = newVelocity.magnitude == 0.0f;
+            Vector2 newVelocity = new Vector2(iHorizontal * hSpeed, iVertical * vSpeed);
 
-                body.velocity = newVelocity;
-            //}
-            //else
-            //{
-            //    IsStationary = true;
+            IsClimbing = newVelocity.magnitude > 0.0f;
+            IsStationary = newVelocity.magnitude == 0.0f;
 
-            //    body.velocity = Vector2.zero;
-            //}
+            body.velocity = newVelocity;
         }
 
         // Falling or swinging
@@ -323,7 +318,7 @@ public class PlayerController : MonoBehaviour
 
         if (supportingPlayer && IsHoldingOn)
         {
-            body.velocity = Vector2.zero;
+            //body.velocity = Vector2.zero;
         }
     }
 

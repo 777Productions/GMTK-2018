@@ -229,7 +229,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 134f411600a5fb84ebb5c483d91e0c91, type: 3}
   - {fileID: 8300000, guid: d5359ec7d98e1c149a2ddb0c6d8923be, type: 3}
   readyText: {fileID: 0}
-  swingStrength: 20
+  swingStrength: 5
   supportingPlayer: 0
   winSprite: {fileID: 0}
   loseSprite: {fileID: 0}

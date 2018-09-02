@@ -2343,7 +2343,7 @@ Prefab:
     - target: {fileID: 114468510589042282, guid: 38b7ca6166c708248af9887b84c24bf1,
         type: 2}
       propertyPath: swingStrength
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 61297976883686522, guid: 38b7ca6166c708248af9887b84c24bf1,
         type: 2}
