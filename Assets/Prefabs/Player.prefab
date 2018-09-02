@@ -224,9 +224,18 @@ MonoBehaviour:
   climbingSound: {fileID: 0}
   swingingSound: {fileID: 0}
   deathSound: {fileID: 8300000, guid: 36d8b096e727c99488d13bedb0e828a2, type: 3}
+  climbingCrunches:
+  - {fileID: 8300000, guid: c3bfec1ec4dab714fb79d301049f363d, type: 3}
+  - {fileID: 8300000, guid: c15077233cc8ec245bec871e0755afc1, type: 3}
+  - {fileID: 8300000, guid: 134f411600a5fb84ebb5c483d91e0c91, type: 3}
+  - {fileID: 8300000, guid: d5359ec7d98e1c149a2ddb0c6d8923be, type: 3}
   readyText: {fileID: 0}
   swingStrength: 5
   supportingPlayer: 0
+  winSprite: {fileID: 0}
+  loseSprite: {fileID: 0}
+  colour: {r: 0, g: 0, b: 0, a: 0}
+  gameOver: 0
 --- !u!212 &212895260606641374
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -270,7 +279,7 @@ SpriteRenderer:
   m_Size: {x: 0.75, y: 0.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!232 &232544862687229306
