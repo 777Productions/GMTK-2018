@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class IcicleSpawner : MonoBehaviour {
 
@@ -19,11 +18,7 @@ public class IcicleSpawner : MonoBehaviour {
     public float minInitialVelocity = 0;
     public float maxInitialVelocity = 1;
 
-    public Text warningText;
-
     private int playersInRange = 0;
-
-    private bool hasWarned = false;
 	
 	// Update is called once per frame
 	void Update ()
@@ -62,7 +57,7 @@ public class IcicleSpawner : MonoBehaviour {
 
     private float GetSpawnSize()
     {
-        float size = Random.Range(minSpawnSize, maxSpawnSize);
+        float size = Random.Range(minInitialVelocity, maxInitialVelocity);
         return size;
     }
 
@@ -72,11 +67,6 @@ public class IcicleSpawner : MonoBehaviour {
         if (playerController)
         {
             playersInRange += 1;
-            if (!hasWarned)
-            {
-                hasWarned = true;
-                StartCoroutine(flashWarning());
-            }
         }
     }
 
@@ -87,28 +77,5 @@ public class IcicleSpawner : MonoBehaviour {
         {
             playersInRange -= 1;
         }
-    }
-
-    private IEnumerator flashWarning()
-    {
-        warningText.enabled = true;
-
-        warningText.color = new Color(warningText.color.r, warningText.color.g, warningText.color.b, 0);
-
-        for (int flashes = 5; flashes > 0; flashes--)
-        {
-            while (warningText.color.a < 1.0f)
-            {
-                warningText.color = new Color(warningText.color.r, warningText.color.g, warningText.color.b, warningText.color.a + (Time.deltaTime / 0.25f));
-                yield return null;
-            }
-            while (warningText.color.a > 0.0f)
-            {
-                warningText.color = new Color(warningText.color.r, warningText.color.g, warningText.color.b, warningText.color.a - (Time.deltaTime / 0.255f));
-                yield return null;
-            }
-        }
-
-        warningText.enabled = false;
     }
 }

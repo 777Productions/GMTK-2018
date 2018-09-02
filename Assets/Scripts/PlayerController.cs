@@ -10,10 +10,6 @@ public class PlayerController : MonoBehaviour
     public PlayerColour playerColour;
     public PlayerController otherPlayer;
 
-    public AudioClip climbingSound;
-    public AudioClip deathSound;
-    public AudioClip swingingSound;
-
     [Range(0.1f, 3.0f)]
     public float vSpeed = 1.0f;
     [Range(0.1f, 3.0f)]
@@ -28,7 +24,6 @@ public class PlayerController : MonoBehaviour
     private string grab_button;
 
     private DistanceJoint2D joint;
-    private AudioSource audioSource;
 
     private GameManager gameManager;
 
@@ -38,7 +33,6 @@ public class PlayerController : MonoBehaviour
 
     public float swingStrength = 5.0f;
 
-    [HideInInspector]
     public bool supportingPlayer;
 
     #region States
@@ -61,7 +55,6 @@ public class PlayerController : MonoBehaviour
         set
         {
             isDead = value;
-            PlayClip(deathSound);
             animator.SetBool("isDead", value);
         }
     }
@@ -84,7 +77,6 @@ public class PlayerController : MonoBehaviour
         set
         {
             isClimbing = value;
-            PlayClip(climbingSound);
             animator.SetBool("isClimbing", value);
         }
     }
@@ -96,7 +88,6 @@ public class PlayerController : MonoBehaviour
         set
         {
             isSwinging = value;
-            PlayClip(swingingSound);
             animator.SetBool("isSwinging", value);
         }
     }
@@ -149,7 +140,6 @@ public class PlayerController : MonoBehaviour
         joint = GetComponent<DistanceJoint2D>();
         gameManager = FindObjectOfType<GameManager>();
         animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
 
 
         if (playerColour == PlayerColour.Blue)
@@ -295,12 +285,6 @@ public class PlayerController : MonoBehaviour
     {
         IsDead = true;
         IsHoldingOn = false;
-    }
-
-    private void PlayClip(AudioClip clip)
-    {
-        audioSource.clip = clip;
-        audioSource.Play();
     }
 }
 
