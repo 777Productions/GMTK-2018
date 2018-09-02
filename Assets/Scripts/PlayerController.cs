@@ -41,6 +41,11 @@ public class PlayerController : MonoBehaviour
 
     public bool supportingPlayer;
 
+    public Sprite winSprite;
+    public Sprite loseSprite;
+
+    public Color colour;
+
     #region States
 
     private bool isReady;
@@ -164,12 +169,14 @@ public class PlayerController : MonoBehaviour
             horizontal_axis = "Player1_Horizontal";
             vertical_axis = "Player1_Vertical";
             grab_button = "Player1_Grab";
+            colour = new Color(26, 152, 238);
         }
         else
         {
             horizontal_axis = "Player2_Horizontal";
             vertical_axis = "Player2_Vertical";
             grab_button = "Player2_Grab";
+            colour = new Color(209, 15, 15);
         }
 
         joint.distance = rope.maxLength;
@@ -315,6 +322,13 @@ public class PlayerController : MonoBehaviour
     {
         audioSource.clip = clip;
         audioSource.Play();
+    }
+
+    public void Disable()
+    {
+        body.velocity = Vector3.zero;
+        animator.enabled = false;
+        this.enabled = false;
     }
 }
 

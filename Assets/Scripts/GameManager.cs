@@ -20,13 +20,24 @@ public class GameManager : MonoBehaviour
     public float fadeDuration = 2.0f;
     
     private bool waitingOnNewGame = false;
+
+    private Vector3 winPos;
+    private Vector3 losePos;
+    private Vector3 winCameraPos;
+
+    public SpriteRenderer flag;
+    public GameObject HUD;
     
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
         gameOverPanel.SetActive(false);
         winPanel.SetActive(false);
         StartCoroutine(FadeHelper.FadeToZeroAlpha(fadeImage, fadeDuration));
+
+        winPos = new Vector3(-2.4f, 50.2f, 0);
+        losePos = new Vector3(-0.46f, 47.83f, 0);
+        winCameraPos = new Vector3(0f, 52.7f, -10);
     }
 
     private void Update()
@@ -48,15 +59,41 @@ public class GameManager : MonoBehaviour
     public void Win(GameObject winner)
     {
         //fade to black
-        //set winner pos and sprite
-        //set loser pos and sprite
-        //set active text
+        FadeHelper.FadeToFullAlpha(fadeImage, 2.0f);
+        
+        //get both player controllers
+        PlayerController winningPlayer = winner.GetComponent<PlayerController>();
+        GameObject loser = winningPlayer.otherPlayer.gameObject;
+        PlayerController losingPlayer = loser.GetComponent<PlayerController>();
+                
+        //set sprite
+        winner.GetComponent<SpriteRenderer>().sprite = winningPlayer.winSprite;
+        loser.GetComponent<SpriteRenderer>().sprite = losingPlayer.loseSprite;
+
+        //change flag colour
+        flag.color = winningPlayer.colour;
+
+        //disable both player scripts
+        winningPlayer.Disable();
+        losingPlayer.Disable();
+
+        //set pos
+        winner.transform.position = winPos;
+        loser.transform.position = losePos;
+       
         //move camera
-        //fade from black
-
-
+        Camera.main.GetComponent<CameraController>().enabled = false;
+        Camera.main.transform.position = winCameraPos;
+        
+        //set active text
         winPanel.SetActive(true);
         waitingOnNewGame = true;
+
+        //hide the HUD
+        HUD.SetActive(false);
+
+        //fade from black
+        FadeHelper.FadeToZeroAlpha(fadeImage, 2.0f);
     }
 
     public void GameOver()
