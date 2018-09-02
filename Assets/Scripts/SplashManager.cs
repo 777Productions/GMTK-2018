@@ -20,6 +20,7 @@ public class SplashManager : MonoBehaviour {
 	void Start () {
         startTime = Time.time;
         StartCoroutine(FadeHelper.FadeToZeroAlpha(fadeImage, fadeDuration));
+        //MusicManager.instance.PlayWind();
     }
 
     // Update is called once per frame

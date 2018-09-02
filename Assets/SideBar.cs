@@ -17,8 +17,6 @@ public class SideBar : MonoBehaviour {
 	void Start () {
         range = maxY - minY;
         rectHeight = GetComponent<RectTransform>().rect.height;
-        Debug.Log(rectHeight);
-
     }
 	
 	// Update is called once per frame

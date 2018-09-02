@@ -15,6 +15,7 @@ public class MenuManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         StartCoroutine(FadeHelper.FadeToZeroAlpha(fadeImage, fadeDuration));
+        MusicManager.instance.PlayWind();
     }
 
     private void Update()
@@ -28,5 +29,6 @@ public class MenuManager : MonoBehaviour {
     public void OnPlay()
     {
         StartCoroutine(FadeHelper.FadeToFullAlpha(fadeImage, fadeDuration, true));
+        MusicManager.instance.PlayMusic();
     }
 }
